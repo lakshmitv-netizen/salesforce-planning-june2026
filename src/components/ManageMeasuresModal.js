@@ -54,8 +54,29 @@ export default function ManageMeasuresModal({ isOpen, onClose, measures: propMea
     type: 'Read',
     subsets: []
   });
+  
+  // Edit form state
+  const [editMeasureName, setEditMeasureName] = useState('');
+  const [editMeasureType, setEditMeasureType] = useState('Calculated');
+  const [editDescription, setEditDescription] = useState('');
+  const [editValueType, setEditValueType] = useState('Volume');
+  const [editRoundingPrecision, setEditRoundingPrecision] = useState('2');
+  const [editAggregationRule, setEditAggregationRule] = useState('Sum');
 
   if (!isOpen) return null;
+  
+  // Normalize unit value to match select options
+  const normalizeUnit = (unit) => {
+    if (!unit) return 'Volume';
+    if (unit === '%') return 'Percent';
+    return unit.charAt(0).toUpperCase() + unit.slice(1).toLowerCase();
+  };
+  
+  // Normalize aggregation value to match select options
+  const normalizeAggregation = (agg) => {
+    if (!agg) return 'Sum';
+    return agg.charAt(0).toUpperCase() + agg.slice(1).toLowerCase();
+  };
   
   const showSuccessToast = (message, description = '') => {
     setToastMessage(message);
@@ -148,6 +169,13 @@ export default function ManageMeasuresModal({ isOpen, onClose, measures: propMea
     
     if (action === 'edit') {
       setSelectedMeasure(measure);
+      // Initialize edit form state with selected measure's values
+      setEditMeasureName(measure.name || '');
+      setEditMeasureType(measure.type || 'Calculated');
+      setEditDescription(measure.description || '');
+      setEditValueType(normalizeUnit(measure.unit));
+      setEditRoundingPrecision(measure.precision || '2');
+      setEditAggregationRule(normalizeAggregation(measure.aggregation));
       setEditPanelOpen(true);
       setClonePanelOpen(false);
       setDeletePanelOpen(false);
@@ -679,7 +707,7 @@ I'll intelligently assign the appropriate Source DMO based on your needs.`;
 
         {/* Edit Measure Panel */}
         {editPanelOpen && selectedMeasure && (
-          <div className="edit-panel">
+          <div className="edit-panel" key={selectedMeasure.id || selectedMeasure.name}>
             <div className="edit-panel-header">
               <h3 className="edit-panel-title">Edit Measure</h3>
               <div className="edit-panel-header-actions">
@@ -724,13 +752,18 @@ I'll intelligently assign the appropriate Source DMO based on your needs.`;
                   <input 
                     type="text" 
                     className="edit-form-input" 
-                    defaultValue={selectedMeasure.name}
+                    value={editMeasureName}
+                    onChange={(e) => setEditMeasureName(e.target.value)}
                   />
                 </div>
 
                 <div className="edit-form-field">
                   <label className="edit-form-label">* Measure Type</label>
-                  <select className="edit-form-select">
+                  <select 
+                    className="edit-form-select"
+                    value={editMeasureType}
+                    onChange={(e) => setEditMeasureType(e.target.value)}
+                  >
                     <option value="Calculated">Calculated</option>
                     <option value="Direct">Direct</option>
                   </select>
@@ -742,12 +775,18 @@ I'll intelligently assign the appropriate Source DMO based on your needs.`;
                     className="edit-form-textarea" 
                     placeholder="Enter description..."
                     rows="3"
+                    value={editDescription}
+                    onChange={(e) => setEditDescription(e.target.value)}
                   />
                 </div>
 
                 <div className="edit-form-field">
                   <label className="edit-form-label">* Value Type</label>
-                  <select className="edit-form-select" defaultValue={selectedMeasure.unit}>
+                  <select 
+                    className="edit-form-select" 
+                    value={editValueType}
+                    onChange={(e) => setEditValueType(e.target.value)}
+                  >
                     <option value="Volume">Volume</option>
                     <option value="Currency">Currency</option>
                     <option value="Percent">Percent</option>
@@ -757,7 +796,11 @@ I'll intelligently assign the appropriate Source DMO based on your needs.`;
 
                 <div className="edit-form-field">
                   <label className="edit-form-label">* Rounding Precision</label>
-                  <select className="edit-form-select">
+                  <select 
+                    className="edit-form-select"
+                    value={editRoundingPrecision}
+                    onChange={(e) => setEditRoundingPrecision(e.target.value)}
+                  >
                     <option value="2">2 Decimal</option>
                     <option value="0">0 Decimal</option>
                     <option value="1">1 Decimal</option>
@@ -773,7 +816,11 @@ I'll intelligently assign the appropriate Source DMO based on your needs.`;
                 
                 <div className="edit-form-field">
                   <label className="edit-form-label">* Aggregation Rule</label>
-                  <select className="edit-form-select" defaultValue={selectedMeasure.aggregation}>
+                  <select 
+                    className="edit-form-select" 
+                    value={editAggregationRule}
+                    onChange={(e) => setEditAggregationRule(e.target.value)}
+                  >
                     <option value="Sum">Sum</option>
                     <option value="Average">Average</option>
                     <option value="Count">Count</option>

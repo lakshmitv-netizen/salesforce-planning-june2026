@@ -44,7 +44,7 @@ export default function ManageUserAccessModal({ isOpen, onClose }) {
         {/* Modal Header */}
         <div className="modal-header">
           <div className="modal-header-content">
-            <h2 className="modal-title">Manage User Access</h2>
+            <h2 className="modal-title">Setup User & User Roles</h2>
             <img src={imgInfoIcon} alt="Info" className="info-icon" />
           </div>
           <button className="modal-close-button" onClick={onClose}>

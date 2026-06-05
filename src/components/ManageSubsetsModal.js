@@ -391,7 +391,7 @@ export default function ManageSubsetsModal({ isOpen, onClose, measureSubsets: pr
                       onMouseLeave={() => setHoveredMeasureCount(null)}
                     >
                       <span style={{ cursor: 'pointer', color: '#0176d3' }}>
-                        {subset.measureCount} measures
+                        {subset.measures?.length || 0} measures
                       </span>
                       {hoveredMeasureCount === index && (
                         <div className="measures-preview-popover">
@@ -401,9 +401,9 @@ export default function ManageSubsetsModal({ isOpen, onClose, measureSubsets: pr
                                 {measure}
                               </div>
                             ))}
-                            {subset.measureCount > 3 && (
+                            {(subset.measures?.length || 0) > 3 && (
                               <div className="measures-preview-more">
-                                +{subset.measureCount - 3} more
+                                +{(subset.measures?.length || 0) - 3} more
                               </div>
                             )}
                           </div>

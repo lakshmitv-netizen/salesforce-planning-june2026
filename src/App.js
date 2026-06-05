@@ -73,6 +73,14 @@ function App() {
       measures: ['Forecasted Quantity', 'Revenue Growth'] },
   ]);
   
+  // Time granularity configuration state
+  const [timeGranularities, setTimeGranularities] = useState({
+    Weekly: false,
+    Monthly: true,  // Default selection
+    Quarterly: false,
+    Yearly: false
+  });
+  
   // Shared hierarchies state
   const [hierarchies, setHierarchies] = useState([
     { 
@@ -257,6 +265,8 @@ function App() {
                   setMeasures={setMeasures}
                   measureSubsets={measureSubsets}
                   setMeasureSubsets={setMeasureSubsets}
+                  timeGranularities={timeGranularities}
+                  setTimeGranularities={setTimeGranularities}
                 />
               </div>
               <RightColumn />
@@ -279,6 +289,7 @@ function App() {
             setMeasures={setMeasures}
             measureSubsets={measureSubsets}
             setMeasureSubsets={setMeasureSubsets}
+            timeGranularities={timeGranularities}
           />
         ) : currentPage === 'hierarchies' ? (
           <div className="content-wrapper" style={{ marginLeft: '326px', width: 'calc(100% - 326px)' }}>

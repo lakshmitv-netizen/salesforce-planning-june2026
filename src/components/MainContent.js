@@ -3,6 +3,7 @@ import ManageUserAccessModal from './ManageUserAccessModal';
 import ManageHierarchiesModal from './ManageHierarchiesModal';
 import ManageMeasuresModal from './ManageMeasuresModal';
 import ManageSubsetsModal from './ManageSubsetsModal';
+import TimeGranularityModal from './TimeGranularityModal';
 
 const imgCheckIcon = "data:image/svg+xml,%3Csvg width='15' height='15' viewBox='0 0 15 15' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 7.5l3 3 6-6' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E";
 
@@ -14,7 +15,7 @@ const imgChevronDown = "data:image/svg+xml,%3Csvg width='12' height='12' viewBox
 
 const imgCloseIcon = "data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M18 6L6 18M6 6l12 12' stroke='%23666' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E";
 
-export default function MainContent({ onNavigateToPlanningView, onNavigateToHierarchies, hierarchies, setHierarchies, measures, setMeasures, measureSubsets, setMeasureSubsets }) {
+export default function MainContent({ onNavigateToPlanningView, onNavigateToHierarchies, hierarchies, setHierarchies, measures, setMeasures, measureSubsets, setMeasureSubsets, timeGranularities, setTimeGranularities }) {
   // State for nested step checkboxes
   const [checkboxStates, setCheckboxStates] = useState({
     'step-2': false,
@@ -86,6 +87,7 @@ export default function MainContent({ onNavigateToPlanningView, onNavigateToHier
   const [isFlowPromptOpen, setIsFlowPromptOpen] = useState(false);
   const [currentFlowId, setCurrentFlowId] = useState(null);
   const [isPlanningHorizonModalOpen, setIsPlanningHorizonModalOpen] = useState(false);
+  const [isTimeGranularityModalOpen, setIsTimeGranularityModalOpen] = useState(false);
 
   const toggleCheckbox = (id) => {
     setCheckboxStates(prev => ({
@@ -130,6 +132,9 @@ export default function MainContent({ onNavigateToPlanningView, onNavigateToHier
 
   const openPlanningHorizonModal = () => setIsPlanningHorizonModalOpen(true);
   const closePlanningHorizonModal = () => setIsPlanningHorizonModalOpen(false);
+
+  const openTimeGranularityModal = () => setIsTimeGranularityModalOpen(true);
+  const closeTimeGranularityModal = () => setIsTimeGranularityModalOpen(false);
 
   const openFlowPrompt = (flowId) => {
     setCurrentFlowId(flowId);
@@ -314,7 +319,7 @@ export default function MainContent({ onNavigateToPlanningView, onNavigateToHier
               <div className="step-header-row" onClick={() => toggleSection('section-2')}>
                 <div style={{ width: '12px' }} />
                 <div className="step-header-text">
-                  <h4 className="step-title">2. Manage User Profile</h4>
+                  <h4 className="step-title">2. Setup User & User Roles</h4>
                   <p className="step-description">
                     Manage Commercial Planning and Forecasting permissions for all users.
                   </p>
@@ -507,7 +512,7 @@ export default function MainContent({ onNavigateToPlanningView, onNavigateToHier
                           <h6 className="nested-step-title">3.3.1 Configure Org Calendar</h6>
                           <p className="nested-step-status">Fiscal Calendar selected by default</p>
                         </div>
-                        <button className="step-button step-action-link" onClick={openPlanningHorizonModal}>Go to Org Calendar</button>
+                        <button className="step-button step-action-link" onClick={openPlanningHorizonModal}>Review</button>
                       </div>
                     </div>
                   </div>
@@ -526,7 +531,7 @@ export default function MainContent({ onNavigateToPlanningView, onNavigateToHier
                         <div className="nested-step-text">
                           <h6 className="nested-step-title">3.3.2 Setup time granularity</h6>
                         </div>
-                        <button className="step-button step-action-link" onClick={openPlanningHorizonModal}>Manage</button>
+                        <button className="step-button step-button-outlined" onClick={openTimeGranularityModal}>Manage</button>
                       </div>
                     </div>
                   </div>
@@ -661,6 +666,20 @@ export default function MainContent({ onNavigateToPlanningView, onNavigateToHier
             </div>
             <div className="modal-body">
               <div className="modal-content" style={{ padding: '24px' }}>
+                <div className="planning-grid-measure-info-banner" style={{ marginTop: 0 }}>
+                  <span>ℹ️</span>
+                  <span>
+                    View and manage calendar settings in{' '}
+                    <a 
+                      href="https://www.salesforce.com/products/platform/products/calendar/" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="planning-grid-info-banner-link"
+                    >
+                      Org Calendar
+                    </a>
+                  </span>
+                </div>
                 <div className="org-calendar-form">
                   <div className="org-calendar-field">
                     <label className="org-calendar-label">Calendar Name</label>
@@ -698,6 +717,14 @@ export default function MainContent({ onNavigateToPlanningView, onNavigateToHier
           </div>
         </div>
       )}
+
+      {/* Time Granularity Modal */}
+      <TimeGranularityModal
+        isOpen={isTimeGranularityModalOpen}
+        onClose={closeTimeGranularityModal}
+        timeGranularities={timeGranularities}
+        setTimeGranularities={setTimeGranularities}
+      />
     </div>
   );
 }

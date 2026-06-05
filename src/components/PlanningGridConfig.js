@@ -13,7 +13,7 @@ const imgDropdownSmall = "data:image/svg+xml,%3Csvg width='12' height='12' viewB
 const imgEditIconSmall = "data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2.4 11.6l2.1-.4 5.2-5.2-1.7-1.7-5.2 5.2-.4 2.1z' stroke='%23666' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M7.1 3.6l1.7 1.7' stroke='%23666' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E";
 const imgDeleteIconSmall = "data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10.5 3.5L3.5 10.5M3.5 3.5l7 7' stroke='%23666' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E";
 
-export default function PlanningGridConfig({ onClose, onBack, hierarchies: propHierarchies, measures: propMeasures, setMeasures: propSetMeasures, measureSubsets: propMeasureSubsets, setMeasureSubsets: propSetMeasureSubsets }) {
+export default function PlanningGridConfig({ onClose, onBack, hierarchies: propHierarchies, measures: propMeasures, setMeasures: propSetMeasures, measureSubsets: propMeasureSubsets, setMeasureSubsets: propSetMeasureSubsets, timeGranularities }) {
   const [selectedComponentTab, setSelectedComponentTab] = useState('Dimensions');
   const [hasSavedOnce, setHasSavedOnce] = useState(false);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
@@ -89,6 +89,20 @@ export default function PlanningGridConfig({ onClose, onBack, hierarchies: propH
     { id: 'Editable', icon: '✎', title: 'Editable' },
     { id: 'Calculated', icon: '+', title: 'Calculated' },
   ];
+  // Map time granularities to level names
+  const getFilteredTimeLevels = () => {
+    const allLevels = [
+      { granularity: 'Yearly', level: 'Year' },
+      { granularity: 'Quarterly', level: 'Quarter' },
+      { granularity: 'Monthly', level: 'Month' },
+      { granularity: 'Weekly', level: 'Week' },
+    ];
+    
+    return allLevels
+      .filter(item => timeGranularities && timeGranularities[item.granularity])
+      .map(item => item.level);
+  };
+
   const dimensionContentMap = {
     Account: {
       panel2Title: 'Account Hierarchy',
@@ -115,12 +129,7 @@ export default function PlanningGridConfig({ onClose, onBack, hierarchies: propH
     Time: {
       panel2Title: 'Time Dimension',
       panel2Description: 'Choose the time buckets and granularity used in the planning grid',
-      levels: [
-        'Year',
-        'Quarter',
-        'Month',
-        'Week',
-      ],
+      levels: getFilteredTimeLevels(),
       previewTitle: 'Grid preview',
       previewDescription: 'Preview for time-based rows and selected measures.',
     },
